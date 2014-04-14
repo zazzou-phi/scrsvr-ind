@@ -13,7 +13,14 @@ class ScreensaverSwitch:
                                            "indicator-messages",
                                            appindicator.CATEGORY_APPLICATION_STATUS)
         self.ind.set_status(appindicator.STATUS_ACTIVE)
-        self.ind.set_attention_icon("indicator-messages-new")
+        self.ind.set_attention_icon("new-messages-red")
+        #self.ind.set_icon_theme_path("/home/source/scrsvr-ind")
+
+        self.check_scrsvr = self.check_if_on()
+        if self.check_scrsvr:
+            self.ind.set_icon('indicator-messages')
+        else:
+            self.ind.set_icon('new-messages-red')
 
         self.menu_setup()
         self.ind.set_menu(self.menu)
@@ -41,12 +48,21 @@ class ScreensaverSwitch:
             self.switch_on()
 
     def switch_off(self):
+        #self.ind.set_attention()
+        self.ind.set_icon('new-messages-red')
         os.system("gsettings set org.gnome.desktop.screensaver lock-enabled false")
         os.system("gsettings set org.gnome.desktop.session idle-delay 0")
+        os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0")
+        os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 0")
+
 
     def switch_on(self):
+        #self.ind.set_active()
+        self.ind.set_icon('indicator-messages')
         os.system("gsettings set org.gnome.desktop.screensaver lock-enabled true")
         os.system("gsettings set org.gnome.desktop.session idle-delay 3600")
+        os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 1800")
+        os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 600")
 
     def check_if_on(self):
         stat, out = commands.getstatusoutput("gsettings get org.gnome.desktop.screensaver lock-enabled")
