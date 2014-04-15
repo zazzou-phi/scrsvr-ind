@@ -18,9 +18,9 @@ class ScreensaverSwitch:
 
         self.check_scrsvr = self.check_if_on()
         if self.check_scrsvr:
-            self.ind.set_icon('indicator-messages')
+            self.ind.set_icon(get_path("scrsvr-on-dark.svg"))
         else:
-            self.ind.set_icon('new-messages-red')
+            self.ind.set_icon(get_path("scrsvr-off-dark.svg"))
 
         self.menu_setup()
         self.ind.set_menu(self.menu)
@@ -49,7 +49,7 @@ class ScreensaverSwitch:
 
     def switch_off(self):
         #self.ind.set_attention()
-        self.ind.set_icon('new-messages-red')
+        self.ind.set_icon(get_path("scrsvr-off-dark.svg"))
         os.system("gsettings set org.gnome.desktop.screensaver lock-enabled false")
         os.system("gsettings set org.gnome.desktop.session idle-delay 0")
         os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 0")
@@ -58,11 +58,11 @@ class ScreensaverSwitch:
 
     def switch_on(self):
         #self.ind.set_active()
-        self.ind.set_icon('indicator-messages')
+        self.ind.set_icon(get_path("scrsvr-on-dark.svg"))
         os.system("gsettings set org.gnome.desktop.screensaver lock-enabled true")
         os.system("gsettings set org.gnome.desktop.session idle-delay 3600")
-        os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 1800")
-        os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 600")
+        os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-timeout 3600")
+        os.system("gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-battery-timeout 1800")
 
     def check_if_on(self):
         stat, out = commands.getstatusoutput("gsettings get org.gnome.desktop.screensaver lock-enabled")
@@ -76,6 +76,12 @@ class ScreensaverSwitch:
 
     def quit(self, widget):
         sys.exit(0)
+
+def get_path(file_name):
+    python_file = os.path.dirname(__file__)
+    rel_path = os.path.join(python_file, file_name)
+    abs_path = os.path.abspath(rel_path)
+    return abs_path
 
 if __name__ == "__main__":
     indicator = ScreensaverSwitch()
